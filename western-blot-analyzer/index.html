@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Western Blot Analyzer</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <i data-lucide="microscope"></i>
+                <h1>Western Blot Analyzer</h1>
+            </div>
+            <div class="header-actions">
+                <label for="image-upload" class="btn primary-btn pulse-glow">
+                    <i data-lucide="upload-cloud"></i> Upload Image
+                </label>
+                <input type="file" id="image-upload" accept="image/png, image/jpeg, image/tiff" hidden>
+            </div>
+        </header>
+
+        <main>
+            <div class="sidebar panel glass">
+                <div class="tool-section">
+                    <h3>1. Image Setup</h3>
+                    <div class="toggle-container">
+                        <label class="toggle">
+                            <input type="checkbox" id="invert-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span>Invert Image for Analysis</span>
+                    </div>
+                    <small>Recommended: Keeps dark bands on a light background for viewing, but internally inverts them for accurate densitometry (bright = higher signal).</small>
+                </div>
+
+                <div class="tool-section">
+                    <h3>2. ROI Type Selection</h3>
+                    <div class="radio-group">
+                        <label class="radio-card active" id="roi-target">
+                            <input type="radio" name="roi-mode" value="target" checked hidden>
+                            <i data-lucide="square" stroke="#3b82f6"></i>
+                            <div class="rc-info">
+                                <span>Target Band</span>
+                                <span>Protein of interest</span>
+                            </div>
+                        </label>
+                        <label class="radio-card" id="roi-control">
+                            <input type="radio" name="roi-mode" value="control" hidden>
+                            <i data-lucide="check-square" stroke="#10b981"></i>
+                            <div class="rc-info">
+                                <span>Loading Ctrl</span>
+                                <span>e.g., GAPDH</span>
+                            </div>
+                        </label>
+                        <label class="radio-card" id="roi-bg">
+                            <input type="radio" name="roi-mode" value="background" hidden>
+                            <i data-lucide="minus-square" stroke="#ef4444"></i>
+                            <div class="rc-info">
+                                <span>Background</span>
+                                <span>For noise subtraction</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="tool-section instructions-box">
+                    <h3><i data-lucide="info"></i> Instructions</h3>
+                    <ul class="instructions-list">
+                        <li>Upload an image to start.</li>
+                        <li>Select ROI type above.</li>
+                        <li>Click & drag on image to draw.</li>
+                        <li>Measure <b>Background</b> first for accurate calculations.</li>
+                        <li>Measure <b>Control</b> bands to unlock Relative Density.</li>
+                    </ul>
+                </div>
+
+                <div class="tool-section footer-actions">
+                    <button class="btn outline-btn" id="clear-rois"><i data-lucide="trash-2"></i> Clear ROIs</button>
+                    <button class="btn success-btn" id="export-csv" disabled><i data-lucide="download"></i> Export to CSV</button>
+                </div>
+            </div>
+
+            <div class="workspace-area">
+                <div class="canvas-container panel glass" id="canvas-wrapper">
+                    <div class="empty-state" id="empty-state">
+                        <div class="icon-pulse"><i data-lucide="image" size="48"></i></div>
+                        <p>Upload a western blot image to begin.</p>
+                        <span>Supports PNG, JPG</span>
+                    </div>
+                    <!-- The canvas will be dynamically sized -->
+                    <canvas id="blot-canvas"></canvas>
+                </div>
+
+                <div class="results-panel panel glass">
+                    <div class="results-header">
+                        <h2>Quantification Results</h2>
+                        <span class="badge" id="bg-badge">Background: Pending</span>
+                    </div>
+                    <div class="table-container">
+                        <table id="results-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Type</th>
+                                    <th>Area (px)</th>
+                                    <th>Mean Int.</th>
+                                    <th>Corrected Int. Density</th>
+                                    <th>Rel. Density</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-body">
+                                <tr class="empty-row"><td colspan="7">Draw regions of interest on the image to see data here.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>lucide.createIcons();</script>
+    <script src="app.js"></script>
+</body>
+</html>
